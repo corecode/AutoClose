@@ -75,7 +75,8 @@ fun <SID>ToggleAutoCloseMappings() " --- {{{2
         iunmap }
         iunmap <BS>
         iunmap <C-h>
-        iunmap <Esc>
+        "iunmap <Esc>
+        autocmd! autoclose
         let g:autoclose_on = 0
         echo "AutoClose Off"
     else
@@ -90,14 +91,16 @@ fun <SID>ToggleAutoCloseMappings() " --- {{{2
         inoremap <silent> } <C-R>=<SID>CloseStackPop('}')<CR>
         inoremap <silent> <BS> <C-R>=<SID>OpenCloseBackspace()<CR>
         inoremap <silent> <C-h> <C-R>=<SID>OpenCloseBackspace()<CR>
-        inoremap <silent> <Esc> <C-R>=<SID>CloseStackPop('')<CR><Esc>
-        inoremap <silent> <C-[> <C-R>=<SID>CloseStackPop('')<CR><C-[>
+        "inoremap <silent> <Esc> <C-R>=<SID>CloseStackPop('')<CR><Esc>
+        "inoremap <silent> <C-[> <C-R>=<SID>CloseStackPop('')<CR><C-[>
         "the following simply creates an ambiguous mapping so vim fully
         "processes the escape sequence for terminal keys, see 'ttimeout' for a
         "rough explanation, this just forces it to work
-        if &term[:4] == "xterm"
-            inoremap <silent> <C-[>OC <RIGHT>
-        endif
+        "if &term[:4] == "xterm"
+        "    inoremap <silent> <C-[>OC <RIGHT>
+        "endif
+        augroup autoclose
+        autocmd autoclose InsertLeave <SID>CloseStackPop('')
         let g:autoclose_on = 1
         if a:0 == 0
             "this if is so this message doesn't show up at load
